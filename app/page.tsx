@@ -593,7 +593,12 @@ export default function Home() {
       <section className="section about-section" id="about">
         <div className="container about-grid">
           <div className="about-title-block">
-            <p className="section-kicker about-kicker">ABOUT PANDAeCe</p>
+            <p
+              className="section-kicker about-kicker"
+              style={{ fontWeight: 800 }}
+            >
+              ABOUT PANDAeCe
+            </p>
 
             <h2 className="about-heading">
               <span className="highlight-line">More Than Ads.</span>
@@ -763,7 +768,7 @@ export default function Home() {
             <p className="section-kicker">TESTIMONIALS</p>
 
             <h2>
-              Built Around Your
+              <span className="built-around-blue">Built Around Your</span>
               <br />
               <span className="text-blue">Business Goals</span>
             </h2>
@@ -780,7 +785,7 @@ export default function Home() {
             <p className="section-kicker">FAQ</p>
 
             <h2>
-              Questions?
+              <span style={{ color: "var(--g-blue)" }}>Questions?</span>
               <br />
               <span className="text-blue">We&apos;ve Got Answers.</span>
             </h2>
@@ -855,9 +860,9 @@ export default function Home() {
             <p className="section-kicker">START A CONVERSATION</p>
 
             <h2>
-              Let&apos;s Build Your
+              <span className="contact-build-blue">Let&apos;s Build Your</span>
               <br />
-              <span className="text-blue">Growth System.</span>
+              <span className="contact-growth-black">Growth System.</span>
             </h2>
 
             <p className="contact-desc">
