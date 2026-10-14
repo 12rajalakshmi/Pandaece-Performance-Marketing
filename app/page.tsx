@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useActionState, useEffect, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { submitToGHL } from "./actions";
 import {
   Phone,
   Globe2,
@@ -479,15 +481,14 @@ function TestimonialSlider() {
 
 export default function Home() {
   const [termsOpen, setTermsOpen] = useState(false);
-  const [formStatus, setFormStatus] = useState("");
+  const router = useRouter();
+  const [formState, formAction, isSubmitting] = useActionState(submitToGHL, {
+    success: false,
+  });
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    setFormStatus(
-      "Thank you! Your request was submitted successfully. Our growth team will get in touch shortly."
-    );
-  }
+  useEffect(() => {
+    if (formState.success) router.push("/thank-you");
+  }, [formState.success, router]);
 
   return (
     <main>
@@ -891,7 +892,7 @@ export default function Home() {
             </div>
           </div>
 
-          <form className="contact-form" onSubmit={handleSubmit}>
+          <form className="contact-form" action={formAction}>
             <div className="form-header">
               <span className="form-badge">Free Growth Audit</span>
               <h3>Book Your Consultation</h3>
@@ -963,16 +964,16 @@ export default function Home() {
               </div>
             </div>
 
-            <button className="form-submit" type="submit">
-              <span>Request Consultation</span>
+            <button
+              className="form-submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              <span>
+                {isSubmitting ? "Submitting..." : "Request Consultation"}
+              </span>
               <span className="submit-arrow">↗</span>
             </button>
-
-            {formStatus && (
-              <p className="form-status" role="status">
-                {formStatus}
-              </p>
-            )}
 
             <small className="form-privacy">
               🔒 100% confidential. Your details are safe with us.

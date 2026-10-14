@@ -1302,6 +1302,19 @@ section {
   -webkit-text-stroke: 0.6px currentColor;
 }
 
+.about-kicker,
+.industries-title {
+  color: #f8f9fa !important;
+}
+
+.industries-title {
+  color: #202124 !important;
+  font-size: 14px !important;
+  letter-spacing: 1px !important;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
 /* Main section headings */
 
 .section-heading h2,
@@ -1318,17 +1331,60 @@ section {
   font-weight: 800 !important;
   line-height: 1.12 !important;
   letter-spacing: -1.8px !important;
-  color: #0f9d58 !important;
+  color: var(--g-blue) !important;
   -webkit-text-stroke: 0.8px currentColor;
 }
 
-/* Make blue-highlighted heading words green */
+/* Keep blue-highlighted heading words blue */
 
 .section-heading .text-blue,
 .process-heading .text-blue,
 .section-heading .text-highlight,
 .process-heading .text-highlight {
-  color: #0f9d58 !important;
+  color: var(--g-blue) !important;
+}
+
+#services .section-heading .section-kicker,
+#services .section-heading h2 .text-blue {
+  color: #202124 !important;
+}
+
+#services .section-heading h2 .text-blue::selection {
+  color: #202124;
+  background: #cfe0ff;
+}
+
+#process .process-heading .section-kicker,
+#process .process-heading h2 .text-blue {
+  color: #202124 !important;
+}
+
+#process .process-heading h2 .text-blue::selection {
+  color: #202124;
+  background: #cfe0ff;
+}
+
+#testimonials .testimonials-heading .section-kicker,
+#testimonials .testimonials-heading h2,
+#testimonials .testimonials-heading h2 .text-blue {
+  color: #202124 !important;
+}
+
+#testimonials .testimonials-heading h2::selection,
+#testimonials .testimonials-heading h2 .text-blue::selection {
+  color: var(--g-blue);
+  background: #cfe0ff;
+}
+
+#faq .faq-intro .section-kicker,
+#faq .faq-intro h2,
+#faq .faq-intro h2 .text-blue {
+  color: #202124 !important;
+}
+
+#faq .faq-intro h2 .text-blue::selection {
+  color: #202124;
+  background: #cfe0ff;
 }
 
 /* Preserve readable text on the blue About background */
@@ -1337,10 +1393,14 @@ section {
   color: #ffffff !important;
 }
 
-/* Make the CTA heading green as requested */
+/* Keep CTA text readable on the blue background */
+
+.final-cta .section-kicker {
+  color: #f8f9fa !important;
+}
 
 .final-cta h2 {
-  color: #0f9d58 !important;
+  color: #f8f9fa !important;
 }
 
 /* Keep service and process card titles bold */
@@ -1360,6 +1420,11 @@ section {
     font-size: 15px !important;
     letter-spacing: 1.5px !important;
     font-weight: 800 !important;
+  }
+
+  .industries-title {
+    font-size: 12px !important;
+    letter-spacing: 0.7px !important;
   }
 
   .section-heading h2,
