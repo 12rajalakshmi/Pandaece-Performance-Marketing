@@ -1,7 +1,16 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
-import { Phone, Globe2, Workflow, ArrowUpRight, User, Mail, Smartphone, MessageSquare } from "lucide-react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import {
+  Phone,
+  Globe2,
+  Workflow,
+  ArrowUpRight,
+  User,
+  Mail,
+  Smartphone,
+  MessageSquare,
+} from "lucide-react";
 
 type Platform =
   | "googleads"
@@ -24,7 +33,7 @@ function BrandLogo({ className = "" }: { className?: string }) {
 function PlatformLogo({ platform }: { platform: Platform }) {
   const icons: Record<Platform, { src?: string; label: string }> = {
     googleads: {
-      src: "https://cdn.simpleicons.org/googleads/4285F4",
+      src: "/Google%20ads%20logo.jpg",
       label: "Google Ads",
     },
     meta: {
@@ -48,7 +57,13 @@ function PlatformLogo({ platform }: { platform: Platform }) {
   return (
     <span className={`platform-logo platform-${platform}`} title={info.label}>
       {info.src ? (
-        <img src={info.src} alt={info.label} width={24} height={24} />
+        <img
+          src={info.src}
+          alt={info.label}
+          className={platform === "googleads" ? "google-ads-icon" : ""}
+          width={24}
+          height={24}
+        />
       ) : platform === "website" ? (
         <Globe2 size={22} className="icon-website" aria-label={info.label} />
       ) : (
@@ -62,18 +77,37 @@ function CTAButton({
   children,
   href = "#contact",
   phone = false,
+  nowrap = false,
 }: {
   children: ReactNode;
   href?: string;
   phone?: boolean;
+  nowrap?: boolean;
 }) {
   return (
-    <a href={href} className="button-blue">
+    <a
+      href={href}
+      className={`button-blue ${nowrap ? "button-nowrap" : ""}`}
+      style={
+        nowrap
+          ? {
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+              fontSize: "clamp(11px, 2.5vw, 14px)",
+              padding: "10px 12px",
+            }
+          : undefined
+      }
+    >
       {phone && <Phone size={16} aria-hidden="true" />}
+
       <span className="button-text">{children}</span>
-      <span className="button-arrow" aria-hidden="true">
-        ↗
-      </span>
+
+      {!nowrap && (
+        <span className="button-arrow" aria-hidden="true">
+          ↗
+        </span>
+      )}
     </a>
   );
 }
@@ -148,12 +182,308 @@ const faqs = [
   },
 ];
 
+function TestimonialSlider() {
+  const [slide, setSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const testimonials = [
+    {
+      name: "Sagar S",
+      avatarBg: "avatar-blue",
+      quote:
+        "A connected approach to digital marketing. Their automation and lead management setup saved us countless hours while boosting conversions.",
+    },
+    {
+      name: "Arshiya Ambreen",
+      avatarBg: "avatar-green",
+      quote:
+        "A structured approach to Meta and Google ads that keeps our sales journey organized and predictable.",
+    },
+    {
+      name: "Chethan Shetty",
+      avatarBg: "avatar-yellow",
+      quote:
+        "The PANDAeCe team truly connects technology with marketing. Outstanding ROI and support across all channels.",
+    },
+    {
+      name: "Sakshi Nagaraj",
+      avatarBg: "avatar-blue",
+      quote:
+        "PandaECE boosted our online presence, streamlined eCommerce operations, and delivered excellent software solutions.",
+    },
+    {
+      name: "Nikitha Harish",
+      avatarBg: "avatar-green",
+      quote:
+        "Their creative branding team helped us build a memorable identity and strengthen our market presence.",
+    },
+    {
+      name: "Rakshitha K",
+      avatarBg: "avatar-yellow",
+      quote:
+        "Their tailored real estate ERP improved property management, client interactions, financial tracking, and efficiency.",
+    },
+  ];
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 600px)");
+
+    const updateScreenSize = () => {
+      setIsMobile(mediaQuery.matches);
+      setSlide(0);
+    };
+
+    updateScreenSize();
+    mediaQuery.addEventListener("change", updateScreenSize);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateScreenSize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const maxSlide = isMobile ? testimonials.length - 1 : 1;
+
+    const interval = window.setInterval(() => {
+      setSlide((current) => (current >= maxSlide ? 0 : current + 1));
+    }, 4000);
+
+    return () => window.clearInterval(interval);
+  }, [isMobile, testimonials.length]);
+
+  const goToSlide = (index: number) => {
+    const maxSlide = isMobile ? testimonials.length - 1 : 1;
+    setSlide(Math.max(0, Math.min(index, maxSlide)));
+  };
+
+  const previousSlide = () => {
+    const maxSlide = isMobile ? testimonials.length - 1 : 1;
+    setSlide((current) => (current <= 0 ? maxSlide : current - 1));
+  };
+
+  const nextSlide = () => {
+    const maxSlide = isMobile ? testimonials.length - 1 : 1;
+    setSlide((current) => (current >= maxSlide ? 0 : current + 1));
+  };
+
+  const transformAmount = isMobile
+    ? slide * (100 / testimonials.length)
+    : slide * 50;
+
+  return (
+    <div className={`testimonial-slider ${isMobile ? "mobile-slider" : ""}`}>
+      <div className="testimonial-slider-viewport">
+        <div
+          className="testimonial-slider-track"
+          style={{ transform: `translateX(-${transformAmount}%)` }}
+        >
+          {testimonials.map((testimonial) => (
+            <article className="testimonial-card" key={testimonial.name}>
+              <div className="testimonial-stars">★★★★★</div>
+
+              <p className="testimonial-quote">
+                “{testimonial.quote}”
+              </p>
+
+              <div className="testimonial-person">
+                <span
+                  className={`testimonial-avatar ${testimonial.avatarBg}`}
+                >
+                  {testimonial.name.charAt(0)}
+                </span>
+
+                <strong className="testimonial-name">
+                  {testimonial.name}
+                </strong>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="testimonial-slider-controls">
+        <button
+          type="button"
+          className="testimonial-arrow"
+          aria-label="Previous testimonials"
+          onClick={previousSlide}
+        >
+          &#8592;
+        </button>
+
+        <div className="testimonial-dots">
+          {(isMobile ? testimonials : [0, 1]).map((item, index) => {
+            const dotIndex = index;
+            const active = slide === dotIndex;
+
+            return (
+              <button
+                type="button"
+                key={isMobile && typeof item !== "number" ? item.name : index}
+                className={`testimonial-dot ${active ? "active" : ""}`}
+                aria-label={
+                  isMobile
+                    ? `Show testimonial ${index + 1}`
+                    : `Show testimonial group ${index + 1}`
+                }
+                aria-pressed={active}
+                onClick={() => goToSlide(dotIndex)}
+              />
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          className="testimonial-arrow"
+          aria-label="Next testimonials"
+          onClick={nextSlide}
+        >
+          &#8594;
+        </button>
+      </div>
+
+      <style jsx>{`
+        .testimonial-slider {
+          width: 100%;
+        }
+
+        .testimonial-slider-viewport {
+          width: 100%;
+          overflow: hidden;
+        }
+
+        .testimonial-slider-track {
+          display: flex;
+          width: 200%;
+          transition: transform 600ms ease-in-out;
+          align-items: stretch;
+        }
+
+        .testimonial-slider-track .testimonial-card {
+          box-sizing: border-box;
+          flex: 0 0 16.666667%;
+          width: 16.666667%;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          height: auto;
+        }
+
+        .testimonial-slider-track .testimonial-quote {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          line-clamp: 3;
+          overflow: hidden;
+          min-height: 4.8em;
+        }
+
+        .testimonial-name {
+          font-size: 18px;
+          font-weight: 700;
+        }
+
+        .testimonial-slider-controls {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 14px;
+          margin-top: 30px;
+        }
+
+        .testimonial-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+        }
+
+        .testimonial-arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          flex-shrink: 0;
+          border: 1px solid #dce3ed;
+          border-radius: 50%;
+          background: #fff;
+          color: #2879ef;
+          font-size: 22px;
+          cursor: pointer;
+          transition: background 200ms ease, color 200ms ease;
+        }
+
+        .testimonial-arrow:hover {
+          background: #2879ef;
+          color: #fff;
+        }
+
+        .testimonial-dot {
+          width: 9px;
+          height: 9px;
+          padding: 0;
+          border: none;
+          border-radius: 20px;
+          background: #cbd5e1;
+          cursor: pointer;
+          transition: all 200ms ease;
+        }
+
+        .testimonial-dot.active {
+          width: 24px;
+          background: #2879ef;
+        }
+
+        @media (max-width: 900px) and (min-width: 601px) {
+          .testimonial-slider-track .testimonial-card {
+            padding: 22px;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .testimonial-slider-track {
+            width: 600%;
+          }
+
+          .testimonial-slider-track .testimonial-card {
+            flex: 0 0 16.666667%;
+            width: 16.666667%;
+            padding: 22px;
+            box-sizing: border-box;
+          }
+
+          .testimonial-slider-track .testimonial-quote {
+            min-height: 0;
+          }
+
+          .testimonial-slider-controls {
+            margin-top: 22px;
+          }
+
+          .testimonial-name {
+            font-size: 16px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .testimonial-slider-track {
+            transition: none;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 export default function Home() {
   const [termsOpen, setTermsOpen] = useState(false);
   const [formStatus, setFormStatus] = useState("");
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     setFormStatus(
       "Thank you! Your request was submitted successfully. Our growth team will get in touch shortly."
     );
@@ -166,6 +496,7 @@ export default function Home() {
         <div className="container nav-inner">
           <a href="#home" className="brand" aria-label="PANDAeCe home">
             <BrandLogo className="brand-logo" />
+
             <span className="brand-name">
               PANDA<span>eCe</span>
             </span>
@@ -179,7 +510,7 @@ export default function Home() {
             <a href="#faq">FAQ</a>
           </nav>
 
-          <CTAButton>Book a Consultation</CTAButton>
+          <CTAButton nowrap>Book a Consultation</CTAButton>
         </div>
       </header>
 
@@ -210,6 +541,7 @@ export default function Home() {
 
             <div className="hero-buttons">
               <CTAButton>Book Now &amp; Get 20% Off</CTAButton>
+
               <a href="#services" className="button-outline">
                 Explore Our Services <span aria-hidden="true">↓</span>
               </a>
@@ -222,42 +554,11 @@ export default function Home() {
           </div>
 
           <div className="hero-visual">
-            <div className="visual-orbit orbit-one" />
-            <div className="visual-orbit orbit-two" />
-
-            <div className="visual-center">
-              <BrandLogo className="hero-brand-logo" />
-              <strong>PANDAeCe</strong>
-              <small>PERFORMANCE MARKETING</small>
-            </div>
-
-            <div className="floating-platform platform-google">
-              <PlatformLogo platform="googleads" />
-              <span>Google Ads</span>
-            </div>
-
-            <div className="floating-platform platform-meta">
-              <PlatformLogo platform="meta" />
-              <span>Meta Ads</span>
-            </div>
-
-            <div className="floating-platform platform-whatsapp">
-              <PlatformLogo platform="whatsapp" />
-              <span>WhatsApp</span>
-            </div>
-
-            <div className="floating-platform platform-crm">
-              <PlatformLogo platform="crm" />
-              <span>CRM Automation</span>
-            </div>
-
-            <div className="visual-bottom-card">
-              <span className="live-dot" />
-              <div>
-                <strong>One connected system</strong>
-                <small>Capture · Manage · Convert</small>
-              </div>
-            </div>
+            <img
+              src="/pandaece-ecosystem.png"
+              alt="PANDAeCe Connected Marketing Ecosystem"
+              className="hero-ecosystem-image"
+            />
           </div>
         </div>
       </section>
@@ -269,14 +570,17 @@ export default function Home() {
             <strong className="num-blue">30+</strong>
             <span>Years Combined Experience</span>
           </div>
+
           <div className="number-item">
             <strong className="num-green">1300+</strong>
             <span>Projects Delivered</span>
           </div>
+
           <div className="number-item">
             <strong className="num-yellow">400+</strong>
             <span>Happy Clients</span>
           </div>
+
           <div className="number-item number-message">
             <strong>One Team.</strong>
             <span>One Connected Growth System.</span>
@@ -284,15 +588,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* RICH MULTI-COLOR ABOUT SECTION */}
+      {/* ABOUT SECTION */}
       <section className="section about-section" id="about">
         <div className="container about-grid">
           <div className="about-title-block">
             <p className="section-kicker about-kicker">ABOUT PANDAeCe</p>
-            <h2>
-              More Than Ads.
+
+            <h2 className="about-heading">
+              <span className="highlight-line">More Than Ads.</span>
               <br />
-              <span className="white-heading">A Complete Growth System.</span>
+              <span className="highlight-line">A Complete Growth</span>
+              <br />
+              <span className="highlight-line">System.</span>
             </h2>
           </div>
 
@@ -305,6 +612,7 @@ export default function Home() {
               follow-ups. You work with one accountable team focused entirely
               on your ROI.
             </p>
+
             <div className="about-cta-wrap">
               <a href="#contact" className="button-yellow-cta">
                 <span>Discuss Your Business Goals</span>
@@ -323,6 +631,7 @@ export default function Home() {
             "Clinics and Hospitals",
             "Real Estate",
             "Manufacturing",
+            "Other Industries",
           ].map((industry) => (
             <div className="industry-pill" key={industry}>
               {industry}
@@ -336,11 +645,13 @@ export default function Home() {
         <div className="container">
           <div className="section-heading">
             <p className="section-kicker">OUR SERVICES</p>
+
             <h2>
               Everything Your Business Needs
               <br />
               <span className="text-blue">To Grow Smarter</span>
             </h2>
+
             <p className="section-subtext">
               Unify your paid advertising, website conversion funnel, and lead
               management under one roof.
@@ -349,7 +660,10 @@ export default function Home() {
 
           <div className="services-grid">
             {services.map((service, index) => (
-              <article className={`service-card card-accent-${index % 3}`} key={service.title}>
+              <article
+                className={`service-card card-accent-${index % 3}`}
+                key={service.title}
+              >
                 <div className="service-card-top">
                   <PlatformLogo platform={service.platform} />
                 </div>
@@ -358,7 +672,10 @@ export default function Home() {
                 <p>{service.description}</p>
 
                 <a href="#contact" className="service-link">
-                  <span className="service-link-text">Discuss this service</span>
+                  <span className="service-link-text">
+                    Discuss this service
+                  </span>
+
                   <span className="service-action-icon" aria-hidden="true">
                     <ArrowUpRight size={15} />
                   </span>
@@ -375,6 +692,7 @@ export default function Home() {
                 your specific market.
               </p>
             </div>
+
             <CTAButton>Get a Growth Audit</CTAButton>
           </div>
         </div>
@@ -383,12 +701,13 @@ export default function Home() {
       {/* OUR PROCESS */}
       <section className="section problem-section" id="process">
         <div className="container">
-          <div className="section-heading">
+          <div className="section-heading process-heading">
             <p className="section-kicker">HOW WE WORK</p>
+
             <h2>
               Turn Separate Marketing Tasks
               <br />
-              <span className="text-green">Into One Connected System</span>
+              <span className="text-blue">Into One Connected System</span>
             </h2>
           </div>
 
@@ -423,7 +742,10 @@ export default function Home() {
                   "Continuously optimize campaign targeting and sales pipelines using real-time analytics.",
               },
             ].map((step) => (
-              <article className={`process-card ${step.colorClass}`} key={step.number}>
+              <article
+                className={`process-card ${step.colorClass}`}
+                key={step.number}
+              >
                 <span className="process-number">{step.number}</span>
                 <h3>{step.title}</h3>
                 <p>{step.description}</p>
@@ -436,8 +758,9 @@ export default function Home() {
       {/* TESTIMONIALS */}
       <section className="section testimonials-section" id="testimonials">
         <div className="container">
-          <div className="section-heading">
+          <div className="section-heading testimonials-heading">
             <p className="section-kicker">TESTIMONIALS</p>
+
             <h2>
               Built Around Your
               <br />
@@ -445,39 +768,7 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="testimonials-grid">
-            {[
-              {
-                name: "Sagar S",
-                avatarBg: "avatar-blue",
-                quote:
-                  "A connected approach to digital marketing. Their automation and lead management setup saved us countless hours while boosting conversions.",
-              },
-              {
-                name: "Arshiya Ambreen",
-                avatarBg: "avatar-green",
-                quote:
-                  "A structured approach to Meta and Google ads that keeps our sales journey organized and predictable.",
-              },
-              {
-                name: "Chethan Shetty",
-                avatarBg: "avatar-yellow",
-                quote:
-                  "The PANDAeCe team truly connects technology with marketing. Outstanding ROI and support across all channels.",
-              },
-            ].map((testimonial) => (
-              <article className="testimonial-card" key={testimonial.name}>
-                <div className="testimonial-stars">★★★★★</div>
-                <p>“{testimonial.quote}”</p>
-                <div className="testimonial-person">
-                  <span className={`testimonial-avatar ${testimonial.avatarBg}`}>
-                    {testimonial.name.charAt(0)}
-                  </span>
-                  <strong>{testimonial.name}</strong>
-                </div>
-              </article>
-            ))}
-          </div>
+          <TestimonialSlider />
         </div>
       </section>
 
@@ -486,15 +777,18 @@ export default function Home() {
         <div className="container faq-layout">
           <div className="faq-intro">
             <p className="section-kicker">FAQ</p>
+
             <h2>
               Questions?
               <br />
               <span className="text-blue">We&apos;ve Got Answers.</span>
             </h2>
+
             <p className="faq-intro-text">
               Need help choosing the right plan? Share your current setup with
               us and we&apos;ll build a customized roadmap for your business.
             </p>
+
             <div className="faq-btn-wrapper">
               <CTAButton phone>Talk to Our Experts</CTAButton>
             </div>
@@ -509,6 +803,7 @@ export default function Home() {
                     +
                   </span>
                 </summary>
+
                 <p>{faq.answer}</p>
               </details>
             ))}
@@ -520,18 +815,32 @@ export default function Home() {
       <section className="section final-cta">
         <div className="container final-cta-inner">
           <div>
-            <p className="section-kicker kicker-white">LET&apos;S GROW TOGETHER</p>
+            <p className="section-kicker kicker-white">
+              LET&apos;S GROW TOGETHER
+            </p>
+
             <h2 className="white-heading">
               Customers Are Searching Right Now.
               <br />
               <span>Will They Find You or Your Competitor?</span>
             </h2>
+
             <p className="final-cta-subtext">
-              Schedule a growth strategy call to audit your advertising and sales
-              conversion setup today.
+              Schedule a growth strategy call to audit your advertising and
+              sales conversion setup today.
             </p>
           </div>
-          <a href="#contact" className="button-yellow-cta">
+
+          <a
+            href="#contact"
+            className="button-yellow-cta final-cta-button-nowrap"
+            style={{
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+              fontSize: "clamp(11px, 2.5vw, 15px)",
+              padding: "12px 16px",
+            }}
+          >
             <span>Book Consultation &amp; Get 20% Off</span>
             <span className="button-arrow">↗</span>
           </a>
@@ -543,11 +852,13 @@ export default function Home() {
         <div className="container footer-form-layout">
           <div className="footer-form-copy">
             <p className="section-kicker">START A CONVERSATION</p>
+
             <h2>
               Let&apos;s Build Your
               <br />
               <span className="text-blue">Growth System.</span>
             </h2>
+
             <p className="contact-desc">
               Tell us about your target goals. Our performance marketing experts
               will prepare a tailored execution plan for your business.
@@ -561,6 +872,7 @@ export default function Home() {
                   <p>Targeted Google Ads &amp; Search Funnels</p>
                 </div>
               </div>
+
               <div className="contact-point-item border-green">
                 <PlatformLogo platform="meta" />
                 <div>
@@ -568,6 +880,7 @@ export default function Home() {
                   <p>High-converting Facebook &amp; Meta campaigns</p>
                 </div>
               </div>
+
               <div className="contact-point-item border-yellow">
                 <PlatformLogo platform="whatsapp" />
                 <div>
@@ -582,11 +895,14 @@ export default function Home() {
             <div className="form-header">
               <span className="form-badge">Free Growth Audit</span>
               <h3>Book Your Consultation</h3>
-              <p className="form-subtitle">Share your details and we will reach out within 2 hours.</p>
+              <p className="form-subtitle">
+                Share your details and we will reach out within 2 hours.
+              </p>
             </div>
 
             <div className="form-field">
               <label htmlFor="name">Full Name *</label>
+
               <div className="input-with-icon">
                 <User size={18} className="field-icon" />
                 <input
@@ -602,6 +918,7 @@ export default function Home() {
             <div className="form-row">
               <div className="form-field">
                 <label htmlFor="email">Email Address *</label>
+
                 <div className="input-with-icon">
                   <Mail size={18} className="field-icon" />
                   <input
@@ -616,6 +933,7 @@ export default function Home() {
 
               <div className="form-field">
                 <label htmlFor="phone">Phone Number *</label>
+
                 <div className="input-with-icon">
                   <Smartphone size={18} className="field-icon" />
                   <input
@@ -630,7 +948,10 @@ export default function Home() {
             </div>
 
             <div className="form-field">
-              <label htmlFor="business">Business Requirements &amp; Goals</label>
+              <label htmlFor="business">
+                Business Requirements &amp; Goals
+              </label>
+
               <div className="input-with-icon icon-textarea">
                 <MessageSquare size={18} className="field-icon" />
                 <textarea
@@ -670,6 +991,7 @@ export default function Home() {
               aria-label="PANDAeCe home"
             >
               <BrandLogo className="brand-logo footer-brand-logo" />
+
               <span className="brand-name">
                 PANDA<span>eCe</span>
               </span>
@@ -677,7 +999,8 @@ export default function Home() {
 
             <p>
               We empower ambitious business owners by connecting advertising,
-              high-converting landing pages, CRM pipelines, and intelligent automation.
+              high-converting landing pages, CRM pipelines, and intelligent
+              automation.
             </p>
 
             <span className="footer-website">
@@ -687,12 +1010,15 @@ export default function Home() {
 
           <div className="footer-column">
             <h4>Get In Touch</h4>
+
             <p className="footer-contact-heading">
               Have a growth objective in mind? Let&apos;s connect today.
             </p>
+
             <a className="footer-static-link" href="#contact">
               Request Consultation
             </a>
+
             <a className="footer-static-link" href="#contact">
               Send an Enquiry
             </a>
@@ -709,7 +1035,6 @@ export default function Home() {
               aria-controls="footer-terms-panel"
             >
               <span>Terms &amp; Conditions</span>
-              <span aria-hidden="true">{termsOpen ? "−" : "+"}</span>
             </button>
 
             <a className="footer-static-link" href="#contact">
@@ -721,18 +1046,25 @@ export default function Home() {
         {termsOpen && (
           <div className="container terms-panel" id="footer-terms-panel">
             <h3>Terms &amp; Conditions</h3>
+
             <p>
-              1. <strong>Services:</strong> PANDAeCe provides performance marketing,
-              advertising, website design, and automation solutions as agreed in writing.
+              <strong>Services:</strong> PANDAeCe provides performance marketing,
+              advertising, website design, and automation solutions as agreed in
+              writing.
             </p>
+
             <p>
-              2. <strong>Budgeting:</strong> Service fees exclude direct advertising budget spent on ad networks (Google/Meta).
+              <strong>Budgeting:</strong> Service fees exclude direct advertising
+              budget spent on ad networks (Google/Meta).
             </p>
           </div>
         )}
 
         <div className="container footer-bottom">
-          <p>© 2026 <strong>PANDAeCe</strong>. All rights reserved.</p>
+          <p>
+            © 2026 <strong>PANDAeCe</strong>. All rights reserved.
+          </p>
+
           <a href="#home">Back to top ↑</a>
         </div>
       </footer>
