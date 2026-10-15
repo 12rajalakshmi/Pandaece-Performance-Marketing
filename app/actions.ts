@@ -1,7 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 export type ContactFormState = {
-  success: boolean;
+  error: string | null;
 };
 
 export async function submitToGHL(
@@ -13,13 +15,15 @@ export async function submitToGHL(
   const phone = String(formData.get("phone") ?? "").trim();
   const goal = String(formData.get("business") ?? "").trim();
 
-  if (!name || !email || !phone) return { success: false };
+  if (!name || !email || !phone) {
+    return { error: "Please enter your name, email address, and phone number." };
+  }
 
   const apiKey = process.env.GHL_API_KEY;
   const locationId = process.env.GHL_LOCATION_ID;
   if (!apiKey || !locationId) {
     console.error("GHL credentials are not configured.");
-    return { success: false };
+    return { error: "We couldn't submit your request. Please try again later." };
   }
 
   const [firstName, ...lastNames] = name.split(/\s+/);
@@ -55,12 +59,12 @@ export async function submitToGHL(
 
     if (!response.ok) {
       console.error("GHL contact submission failed with status:", response.status);
-      return { success: false };
+      return { error: "We couldn't submit your request. Please try again later." };
     }
-
-    return { success: true };
   } catch (error) {
     console.error("GHL contact submission failed:", error);
-    return { success: false };
+    return { error: "We couldn't submit your request. Please try again later." };
   }
+
+  redirect("/thank-you");
 }

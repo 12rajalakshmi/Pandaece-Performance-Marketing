@@ -978,6 +978,13 @@ section {
   color: var(--text-light);
 }
 
+.form-error {
+  margin: 0 0 14px;
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .form-field {
   margin-bottom: 16px;
   display: flex;

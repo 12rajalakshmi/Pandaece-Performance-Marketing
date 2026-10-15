@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useEffect, useState, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
 import { submitToGHL } from "./actions";
 import {
   Phone,
@@ -481,14 +480,9 @@ function TestimonialSlider() {
 
 export default function Home() {
   const [termsOpen, setTermsOpen] = useState(false);
-  const router = useRouter();
   const [formState, formAction, isSubmitting] = useActionState(submitToGHL, {
-    success: false,
+    error: null,
   });
-
-  useEffect(() => {
-    if (formState.success) router.push("/thank-you");
-  }, [formState.success, router]);
 
   return (
     <main>
@@ -968,6 +962,12 @@ export default function Home() {
                 />
               </div>
             </div>
+
+            {formState.error && (
+              <p className="form-error" role="alert">
+                {formState.error}
+              </p>
+            )}
 
             <button
               className="form-submit"
