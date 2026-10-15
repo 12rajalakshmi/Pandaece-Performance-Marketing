@@ -13,7 +13,16 @@ export async function submitToGHL(
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
-  const goal = String(formData.get("business") ?? "").trim();
+  const monthlyMarketingBudget = String(
+    formData.get("monthly_marketing_budget") ?? "",
+  ).trim();
+  const servicesInterested = String(
+    formData.get("which_services_interested") ?? "",
+  ).trim();
+  const primaryGoal = String(
+    formData.get("primary_goal_3_6_months") ?? "",
+  ).trim();
+  const website = String(formData.get("website") ?? "").trim();
 
   if (!name || !email || !phone) {
     return { error: "Please enter your name, email address, and phone number." };
@@ -27,19 +36,40 @@ export async function submitToGHL(
   }
 
   const [firstName, ...lastNames] = name.split(/\s+/);
+  const lastName = lastNames.join(" ");
+  const customFields: { key: string; fieldValue: string }[] = [];
+
+  if (monthlyMarketingBudget) {
+    customFields.push({
+      key: "monthly_marketing_budget",
+      fieldValue: monthlyMarketingBudget,
+    });
+  }
+  if (servicesInterested) {
+    customFields.push({
+      key: "which_services_interested",
+      fieldValue: servicesInterested,
+    });
+  }
+  if (primaryGoal) {
+    customFields.push({
+      key: "what_is_your_primary_goal_for_the_next_36_months",
+      fieldValue: primaryGoal,
+    });
+  }
+
   const payload: Record<string, unknown> = {
     locationId,
     firstName,
     name,
     email,
     phone,
+    ...(lastName ? { lastName } : {}),
+    ...(website ? { website } : {}),
     source: "Landing Page Form",
-    tags: ["digital marketing, Google Ads"],
+    tags: ["Google Ads", "Digital Marketing"],
+    customFields,
   };
-
-  const lastName = lastNames.join(" ");
-  if (lastName) payload.lastName = lastName;
-  if (goal) payload.customFields = [{ key: "message", field_value: goal }];
 
   try {
     const response = await fetch(
@@ -48,7 +78,7 @@ export async function submitToGHL(
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
-          Version: "2021-07-28",
+          Version: "v3",
           "Content-Type": "application/json",
           Accept: "application/json",
         },

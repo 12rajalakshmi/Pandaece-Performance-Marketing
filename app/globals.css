@@ -941,11 +941,22 @@ section {
 }
 
 .contact-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 14px;
   background: #ffffff;
   border: 2px solid var(--g-yellow-border);
   border-radius: 20px;
   padding: 32px 28px;
   box-shadow: var(--shadow-lg);
+}
+
+.form-header,
+.form-field-full,
+.form-error,
+.form-submit,
+.form-privacy {
+  grid-column: 1 / -1;
 }
 
 .form-header {
@@ -998,6 +1009,25 @@ section {
   color: var(--text-dark);
 }
 
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-color);
+  background: #f8f9fa;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-dark);
+  transition: all 0.25s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--g-blue);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.15);
+}
+
 .input-with-icon {
   position: relative;
   display: flex;
@@ -1033,12 +1063,6 @@ section {
   border-color: var(--g-blue);
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.15);
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
 }
 
 .form-submit {
@@ -1237,8 +1261,7 @@ section {
 
   .services-grid,
   .testimonials-grid,
-  .process-grid,
-  .form-row {
+  .process-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1259,6 +1282,7 @@ section {
   }
 
   .contact-form {
+    grid-template-columns: 1fr;
     padding: 24px 18px;
   }
 

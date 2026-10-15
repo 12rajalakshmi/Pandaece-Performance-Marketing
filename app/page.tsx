@@ -10,7 +10,6 @@ import {
   User,
   Mail,
   Smartphone,
-  MessageSquare,
 } from "lucide-react";
 
 type Platform =
@@ -148,6 +147,26 @@ const services: {
       "Organise customer leads and automate WhatsApp and email follow-ups for seamless conversions.",
     platform: "crm",
   },
+];
+
+const marketingBudgetRanges = [
+  "Below ₹1 Lakh",
+  "₹1–2 Lakh",
+  "₹2–5 Lakh",
+  "₹5–10 Lakh",
+  "₹10 Lakh+",
+];
+
+const interestedServices = [
+  "Performance Marketing",
+  "Meta Ads",
+  "Google Ads",
+  "Lead Generation",
+  "Website Development",
+  "SEO",
+  "CRM Automation",
+  "WhatsApp Automation",
+  "Complete Marketing Solution",
 ];
 
 const faqs = [
@@ -915,9 +934,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="email">Email Address *</label>
+            <div className="form-field">
+              <label htmlFor="email">Email Address *</label>
 
                 <div className="input-with-icon">
                   <Mail size={18} className="field-icon" />
@@ -929,10 +947,10 @@ export default function Home() {
                     required
                   />
                 </div>
-              </div>
+            </div>
 
-              <div className="form-field">
-                <label htmlFor="phone">Phone Number *</label>
+            <div className="form-field">
+              <label htmlFor="phone">Phone Number *</label>
 
                 <div className="input-with-icon">
                   <Smartphone size={18} className="field-icon" />
@@ -944,23 +962,70 @@ export default function Home() {
                     required
                   />
                 </div>
-              </div>
             </div>
 
             <div className="form-field">
-              <label htmlFor="business">
-                Business Requirements &amp; Goals
+              <label htmlFor="monthly_marketing_budget">
+                Monthly Marketing Budget
               </label>
+              <select
+                className="form-control"
+                id="monthly_marketing_budget"
+                name="monthly_marketing_budget"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Select your monthly budget
+                </option>
+                {marketingBudgetRanges.map((range) => (
+                  <option key={range} value={range}>
+                    {range}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <div className="input-with-icon icon-textarea">
-                <MessageSquare size={18} className="field-icon" />
-                <textarea
-                  id="business"
-                  name="business"
-                  rows={3}
-                  placeholder="Tell us about your current marketing goals..."
-                />
-              </div>
+            <div className="form-field">
+              <label htmlFor="which_services_interested">
+                Which Services Are You Interested In?
+              </label>
+              <select
+                className="form-control"
+                id="which_services_interested"
+                name="which_services_interested"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Select a service
+                </option>
+                {interestedServices.map((service) => (
+                  <option key={service} value={service}>
+                    {service}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="website">Website</label>
+              <input
+                className="form-control"
+                id="website"
+                name="website"
+                type="url"
+                placeholder="https://yourcompany.com"
+              />
+            </div>
+
+            <div className="form-field form-field-full">
+              <label htmlFor="primary_goal_3_6_months">What is your primary goal for the next 3–6 months?</label>
+              <input
+                className="form-control"
+                id="primary_goal_3_6_months"
+                name="primary_goal_3_6_months"
+                type="text"
+                placeholder="Describe the main result you want to achieve..."
+              />
             </div>
 
             {formState.error && (
